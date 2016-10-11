@@ -29,10 +29,9 @@ class Clean(object):
 			srv_label = server["server_label"][:12]
 			srv_kernel = server["kernel_name"]
 			filtered_group = self.group.filtered_grp([self.window_grp, self.linux_grp])
-			desginated_grp = self.group.find_group(filtered_group, name=srv_platform)
+			designated_group = self.group.designated_grp(srv_kernel, srv_platform, filtered_group)
 
-
-			if not desginated_grp:
+			if not designated_group:
 				if srv_platform == 'windows':
 					parent_id = self.group.create_grp(srv_kernel, self.window_grp)
 					child_id = self.group.create_grp(srv_label, parent_id)
@@ -42,9 +41,9 @@ class Clean(object):
 					child_id = self.group.create_grp(srv_label, parent_id)
 					self.server.move_servers(server['id'], child_id)
 			else:
-				filtered_sub = self.group.filtered_grp([desginated_grp])
+				filtered_sub = self.group.filtered_grp([designated_group])
 				if not self.group.find_group(filtered_sub, name=srv_label):
-					child_id = self.group.create_grp(srv_label, desginated_grp)
+					child_id = self.group.create_grp(srv_label, designated_group)
 					self.server.move_servers(server['id'], child_id)
 				else:
 					self.server.move_servers(server['id'], self.group.find_group(filtered_sub, name=srv_label))
@@ -60,8 +59,8 @@ class Clean(object):
 
 def main():
 	clean = Clean()
-	clean.move_new_servers()
 	# clean.move_deactivated_servers()
+	clean.move_new_servers()
 
 if __name__ == "__main__":
     main()
