@@ -28,6 +28,8 @@ The second functionality of this project moves all deactivated servers that are 
 
 1. Python 2.7.10 
 2. cloudpassage python package
+3. pytz (install via pip install pytz)
+4. dateutil.parser (install via pip install python-dateutil)
 
 <b> To use: </b>
 
