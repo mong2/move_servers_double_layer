@@ -14,9 +14,9 @@ PORTAL_CONFIG = os.path.join(os.path.dirname(__file__), 'configs/portal.yml')
 
 class Clean(object):
 	def __init__(self):
-		self.server = ServerController()
-		self.group = GroupController()
 		self.configs = yaml.load(file(PORTAL_CONFIG, 'r'))
+		self.server = ServerController(self.configs["key_id"], self.configs["secret_key"])
+		self.group = GroupController(self.configs["key_id"], self.configs["secret_key"])
 
 	def move_new_servers(self):
 		servers = self.server.filter_srv_label(group_name=self.configs["newserver_group"], state=["deactivated", "active"])
@@ -61,7 +61,7 @@ class Clean(object):
 def main():
 	clean = Clean()
 	clean.move_new_servers()
-	clean.move_deactivated_servers()
+	# clean.move_deactivated_servers()
 
 if __name__ == "__main__":
     main()

@@ -2,9 +2,9 @@ import cloudpassage
 import json
 
 class GroupController(object):
-	def __init__(self):
-		self.key_id = 'd652aca5'
-		self.secret_key = 'd6e61b3e4a31967d9b7253acb89e563c'
+	def __init__(self, key_id, secret_key):
+		self.key_id = key_id
+		self.secret_key = secret_key
 
 	def create_halo_session_object(self):
 	    """create halo session object"""

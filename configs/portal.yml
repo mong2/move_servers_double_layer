@@ -1,8 +1,8 @@
 api_hostname : https://api.cloudpassage.com
 port: 443
-key_id:
-secret_key:
-linux_subgroup:
+key_id: 
+secret_key: 
+linux_subgroup: 
 windows_subgroup:
 retired_group_id:
 newserver_group: newservers
