@@ -26,7 +26,7 @@ class Clean(object):
 
 		for server in servers:
 			srv_platform = server["platform"]
-			srv_label = server["server_label"]
+			srv_label = server["server_label"][:12]
 			srv_kernel = server["kernel_name"]
 			filtered_group = self.group.filtered_grp([self.window_grp, self.linux_grp])
 			desginated_grp = self.group.find_group(filtered_group, name=srv_platform)
