@@ -52,7 +52,6 @@ class Clean(object):
 
 	def move_deactivated_servers(self):
 		deactivated_servers = self.server.index(state=["deactivated"], last_state_change_lte=self.time_gap)
-		print deactivated_servers
 		filtered_servers = self.server.filter_srv(deactivated_servers, group_id=self.configs["retired_group_id"])
 		for server in filtered_servers:
 			self.server.move_servers(server["id"], self.configs["retired_group_id"])
