@@ -1,5 +1,5 @@
 import cloudpassage
-from collections import defaultdict
+import datetime
 
 
 class ServerController(object):
@@ -18,19 +18,21 @@ class ServerController(object):
 		server_object = cloudpassage.Server(self.create_halo_session_object())
 		return(server_object)
 
-	def index(self, group_name=None, state=[]):
+	def index(self, **kwargs):
 		s = self.build_server_object()
-		return s.list_all(group_name=group_name, state=state)
+		return s.list_all(**kwargs)
 
-	def filter_srv_label(self, group_name=None, state=[]):
-		servers = self.index(group_name=group_name, state=state)
-		servers = [x for x in servers if x['server_label']]
-		return servers
-
-	def filter_srv(self, servers, param):
-		servers = [ x for x in servers if x["group_id"] != param]
+	def filter_srv(self, servers, **kwargs):
+		key, value = kwargs.items()[0]
+		servers = [ x for x in servers if x[key] != value]
 		return servers
 
 	def move_servers(self, srv_id, group_id):
 		server = self.build_server_object()
 		server.assign_group(srv_id, group_id)
+		self.log(srv_id, group_id)
+
+	def log(self, srv_id, group_id):
+		with open('log/clean.log', 'a') as f:
+			log_msg = "%s     Move server_id: %s to group: %s \n" % (datetime.datetime.utcnow(), srv_id, group_id)
+			f.write(log_msg)

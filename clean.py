@@ -17,9 +17,11 @@ class Clean(object):
 		self.configs = yaml.load(file(PORTAL_CONFIG, 'r'))
 		self.server = ServerController(self.configs["key_id"], self.configs["secret_key"])
 		self.group = GroupController(self.configs["key_id"], self.configs["secret_key"])
+		self.time_gap = (datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - datetime.timedelta(days=14))
 
 	def move_new_servers(self):
-		servers = self.server.filter_srv_label(group_name=self.configs["newserver_group"], state=["deactivated", "active"])
+		kwargs = {"group_name": self.configs["newserver_group"], "state": ['active','deactivated']}
+		servers = self.server.filter_srv(self.server.index(**kwargs), server_label=None)
 		groups = self.group.index()
 		self.window_grp = self.group.find_group(groups, id=self.configs['windows_subgroup'])
 		self.linux_grp = self.group.find_group(groups, id=self.configs['linux_subgroup'])
@@ -49,23 +51,16 @@ class Clean(object):
 					self.server.move_servers(server['id'], self.group.find_group(filtered_sub, name=srv_label))
 
 	def move_deactivated_servers(self):
-		deactivated_servers = self.server.index(state=["deactivated"])
-		filtered_servers = self.server.filter_srv(deactivated_servers, self.configs["retired_group_id"])
+		deactivated_servers = self.server.index(state=["deactivated"], last_state_change_lte=self.time_gap)
+		print deactivated_servers
+		filtered_servers = self.server.filter_srv(deactivated_servers, group_id=self.configs["retired_group_id"])
 		for server in filtered_servers:
-			srv_last_seen = dateutil.parser.parse(server["last_state_change"])
-			time_gap = (datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - datetime.timedelta(days=14))
-			if srv_last_seen < time_gap:
-				log_msg = "%s     Move server_id: %s to retired group\n" % (datetime.datetime.utcnow(), server["id"])
-				self.server.move_servers(server["id"], self.configs["retired_group_id"])
-				self.log(log_msg)
+			self.server.move_servers(server["id"], self.configs["retired_group_id"])
 
-	def log(self, log_msg):
-		with open('log/clean.log', 'a') as f:
-			f.write(log_msg)
 def main():
 	clean = Clean()
-	clean.move_deactivated_servers()
 	clean.move_new_servers()
+	clean.move_deactivated_servers()
 
 if __name__ == "__main__":
     main()
