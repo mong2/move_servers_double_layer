@@ -27,6 +27,10 @@ class ServerController(object):
 		servers = [x for x in servers if x['server_label']]
 		return servers
 
+	def filter_srv(self, servers, param):
+		servers = [ x for x in servers if x["group_id"] != param]
+		return servers
+
 	def move_servers(self, srv_id, group_id):
 		server = self.build_server_object()
 		server.assign_group(srv_id, group_id)

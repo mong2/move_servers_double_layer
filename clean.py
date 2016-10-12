@@ -50,16 +50,21 @@ class Clean(object):
 
 	def move_deactivated_servers(self):
 		deactivated_servers = self.server.index(state=["deactivated"])
-		for server in deactivated_servers:
+		filtered_servers = self.server.filter_srv(deactivated_servers, self.configs["retired_group_id"])
+		for server in filtered_servers:
 			srv_last_seen = dateutil.parser.parse(server["last_state_change"])
 			time_gap = (datetime.datetime.utcnow().replace(tzinfo=pytz.utc) - datetime.timedelta(days=14))
 			if srv_last_seen < time_gap:
-				print "Move server_id: %s to retired group" % (server["id"])
+				log_msg = "%s     Move server_id: %s to retired group\n" % (datetime.datetime.utcnow(), server["id"])
 				self.server.move_servers(server["id"], self.configs["retired_group_id"])
+				self.log(log_msg)
 
+	def log(self, log_msg):
+		with open('log/clean.log', 'a') as f:
+			f.write(log_msg)
 def main():
 	clean = Clean()
-	# clean.move_deactivated_servers()
+	clean.move_deactivated_servers()
 	clean.move_new_servers()
 
 if __name__ == "__main__":
