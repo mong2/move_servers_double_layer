@@ -27,12 +27,17 @@ class ServerController(object):
 		servers = [ x for x in servers if x[key] != value]
 		return servers
 
-	def move_servers(self, srv_id, group_id):
-		server = self.build_server_object()
-		server.assign_group(srv_id, group_id)
-		self.log(srv_id, group_id)
+	def move_servers(self, srv, group_id, group_name):
+		servers = self.build_server_object()
+		servers.assign_group(srv["id"], group_id)
+		self.log(srv, group_id, group_name)
 
-	def log(self, srv_id, group_id):
+	def log(self, server, group_id, group_name):
 		with open('log/clean.log', 'a') as f:
-			log_msg = "%s     Move server_id: %s to group: %s \n" % (datetime.datetime.utcnow(), srv_id, group_id)
+			log_msg = "%s     Moved server label: %s (server_id: %s) from group name: %s (group_id: %s) to group name: %s (group_id: %s) \n" % (datetime.datetime.utcnow(),
+																																				server["server_label"],
+																																				server["id"],
+																																				server["group_name"],
+																																				server["group_id"],
+																																				group_name, group_id)
 			f.write(log_msg)

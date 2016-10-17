@@ -32,11 +32,11 @@ class GroupController(object):
 		if key == 'id':
 			for group in groups:
 				if group[key] == value:
-					return group["id"]
+					return group
 		else:
 			for group in groups:
 				if group[key] == value:
-					return group['id']
+					return group
 		return None
 
 	def create_grp(self, grp_name, grp_id):
