@@ -23,38 +23,33 @@ class Clean(object):
                     "group_name": self.configs["newserver_group"],
                     "state": ['active', 'deactivated']
                 }
-        servers = self.server.filter_srv(self.server.index(**kwargs), server_label=None)
+        servers = self.server.index(**kwargs)
         groups = self.group.index()
         self.window_grp = self.group.find_group(groups, id=self.configs['windows_subgroup'])
         self.linux_grp = self.group.find_group(groups, id=self.configs['linux_subgroup'])
 
+        print servers
         for server in servers:
-            srv_platform = server["platform"]
-            srv_label = server["server_label"][:12]
+            srv_grp_name = "%s %s" % (server["platform"], server["platform_version"])
             srv_kernel = server["kernel_name"]
 
             filtered_group = self.group.filtered_grp([self.window_grp["id"], self.linux_grp["id"]])
-            designated_group = self.group.designated_grp(srv_kernel, srv_platform, filtered_group)
+            designated_group = self.group.designated_grp(srv_kernel, srv_grp_name, filtered_group)
 
             if not designated_group:
-                grp_name_window = "%s--%s" % (srv_kernel, srv_label)
-                grp_name_linux = "%s--%s" % (srv_platform, srv_label)
-                if srv_platform == 'windows':
+                grp_name_window = "%s" % (srv_kernel)
+                grp_name_linux = "%s" % (srv_grp_name)
+                if "windows" in srv_grp_name:
                     parent_id = self.group.create_grp(srv_kernel, self.window_grp["id"])
-                    child_id = self.group.create_grp(srv_label, parent_id)
-                    self.server.move_servers(server, child_id, grp_name_window)
+                    self.server.move_servers(server, parent_id, grp_name_window)
                 else:
-                    parent_id = self.group.create_grp(srv_platform, self.linux_grp["id"])
-                    child_id = self.group.create_grp(srv_label, parent_id)
-                    self.server.move_servers(server, child_id, grp_name_linux)
+                    print "here"
+                    parent_id = self.group.create_grp(srv_grp_name, self.linux_grp["id"])
+                    self.server.move_servers(server, parent_id, grp_name_linux)
             else:
-                grp_name = "%s--%s" % (designated_group["name"], srv_label)
+                grp_name = "%s" % (designated_group["name"])
                 filtered_sub = self.group.filtered_grp([designated_group["id"]])
-                if not self.group.find_group(filtered_sub, name=srv_label):
-                    child_id = self.group.create_grp(srv_label, designated_group["id"])
-                    self.server.move_servers(server, child_id, grp_name)
-                else:
-                    self.server.move_servers(server, self.group.find_group(filtered_sub, name=srv_label)["id"], grp_name)
+                self.server.move_servers(server, designated_group["id"], grp_name)
 
     def move_deactivated_servers(self):
         retired_group = self.group.find_group(self.group.index(), id=self.configs["retired_group_id"])
