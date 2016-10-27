@@ -1,4 +1,4 @@
-# move_servers
+# move_servers_double_layer
 <b> Description </b>
 
 Project to move all servers from a target server group into a subset of Linux and Windows server groups. The subset of server groups are separated by platforms then by their respective server labels.
