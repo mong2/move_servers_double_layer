@@ -13,10 +13,8 @@ The second functionality of this project moves all deactivated servers that are 
 
   * key_id, secret_key pair (This is your halo portal api_keys)
   
-  * linux_subgroup (group_id for the target linux subgroup)
-  
-  * windows_subgroup (group_id for the target windows subgroup)
-  
+  * aws_group (group_id for the target AWS subgroup)
+    
   * retired_group_id (group_id for the deactivated servers to be moved into)
   
   * newserver_group (name of the new server group)
