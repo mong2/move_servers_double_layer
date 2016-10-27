@@ -20,17 +20,22 @@ class BuildTreeController(object):
     def designated_grp(self, srv_platform, filtered_group):
         return self.find_group(filtered_group, name=srv_platform)
 
+    def create_family(self, parent_grp, child_grp):
+        parent_id = self.group.create_grp(parent_grp, self.aws_grp)
+        child_id = self.group.create_grp(child_grp, parent_id)
+        return parent_id, child_id
+
+    def check_child_grp_exist(self, child_grp, designated_group):
+        child_exist = self.find_group(self.group.filtered_grp([designated_group["id"]]), name=child_grp)
+        if not child_exist:
+            return self.group.create_grp(child_grp, designated_group["id"])
+        return child_exist["id"]
+
     def build(self, server, filtered_group, parent_grp, child_grp):
         designated_group = self.designated_grp(parent_grp, filtered_group)
-
         if designated_group:
-            filtered_sub = self.group.filtered_grp([designated_group["id"]])
-            if not self.find_group(filtered_sub, name=child_grp):
-                child_id = self.group.create_grp(child_grp, designated_group["id"])
-                self.server.move_servers(server, child_id, child_grp)
-            else:
-                self.server.move_servers(server, self.find_group(filtered_sub, name=child_grp)["id"], child_grp)
+            child_id = self.check_child_grp_exist(child_grp, designated_group)
+            self.server.move_servers(server, child_id, child_grp)
         else:
-            parent_id = self.group.create_grp(parent_grp, self.aws_grp)
-            child_id = self.group.create_grp(child_grp, parent_id)
+            parent_id, child_id = self.create_family(parent_grp, child_grp)
             self.server.move_servers(server, child_id, child_grp)
