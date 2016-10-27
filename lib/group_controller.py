@@ -19,6 +19,10 @@ class GroupController(object):
 		groups = self.build_server_group_object()
 		return groups.list_all()
 
+	def show(self, group_id):
+		groups = self.build_server_group_object()
+		return groups.describe(group_id)
+
 	def filtered_grp(self, group_ids = []):
 		api = cloudpassage.HttpHelper(self.create_halo_session_object())
 		filtered_group = []
@@ -26,18 +30,6 @@ class GroupController(object):
 			resp = api.get("/v1/groups?parent_id=%s" % group_id)
 			filtered_group.extend(resp["groups"])
 		return filtered_group
-
-	def find_group(self, groups, **kwargs):
-		key, value = kwargs.items()[0]
-		if key == 'id':
-			for group in groups:
-				if group[key] == value:
-					return group
-		else:
-			for group in groups:
-				if group[key] == value:
-					return group
-		return None
 
 	def create_grp(self, grp_name, grp_id):
 		api = cloudpassage.HttpHelper(self.create_halo_session_object())
@@ -50,6 +42,3 @@ class GroupController(object):
 		}
 		resp = api.post('/v1/groups', data)
 		return resp["group"]["id"]
-
-	def designated_grp(self, srv_platform, filtered_group):
-		return self.find_group(filtered_group, name=srv_platform)
