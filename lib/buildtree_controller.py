@@ -17,9 +17,6 @@ class BuildTreeController(object):
                     return group
         return None
 
-    def designated_grp(self, srv_platform, filtered_group):
-        return self.find_group(filtered_group, name=srv_platform)
-
     def create_family(self, parent_grp, child_grp):
         parent_id = self.group.create_grp(parent_grp, self.aws_grp)
         child_id = self.group.create_grp(child_grp, parent_id)
@@ -32,7 +29,7 @@ class BuildTreeController(object):
         return child_exist["id"]
 
     def build(self, server, filtered_group, parent_grp, child_grp):
-        designated_group = self.designated_grp(parent_grp, filtered_group)
+        designated_group = self.find_group(filtered_group, name=parent_grp)
         if designated_group:
             child_id = self.check_child_grp_exist(child_grp, designated_group)
             self.server.move_servers(server, child_id, child_grp)
