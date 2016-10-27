@@ -51,8 +51,5 @@ class GroupController(object):
 		resp = api.post('/v1/groups', data)
 		return resp["group"]["id"]
 
-	def designated_grp(self, srv_kernel, srv_grp_name, filtered_group):
-		if "windows" in srv_grp_name:
-			return self.find_group(filtered_group, name=srv_kernel)
-		return self.find_group(filtered_group, name=srv_grp_name)
-
+	def designated_grp(self, srv_platform, filtered_group):
+		return self.find_group(filtered_group, name=srv_platform)
