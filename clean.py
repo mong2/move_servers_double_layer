@@ -26,7 +26,6 @@ class Clean(object):
         servers = self.server.index(**kwargs)
 
         for server in servers:
-            srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"].split(".")[0])
             filtered_group = self.group.filtered_grp([self.configs['aws_group']])
 
             if not server["platform"]:
@@ -34,6 +33,7 @@ class Clean(object):
             elif server["platform"] == "windows":
                 self.build_tree.build(server, filtered_group, server["platform"], server["kernel_name"])
             else:
+                srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"].split(".")[0])
                 self.build_tree.build(server, filtered_group, server["platform"], srv_plaform_version)
 
     def move_deactivated_servers(self):
