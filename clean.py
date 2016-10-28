@@ -29,7 +29,9 @@ class Clean(object):
             srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"])
             filtered_group = self.group.filtered_grp([self.configs['aws_group']])
 
-            if server["platform"] == "windows":
+            if not server["platform"]:
+                pass
+            elif server["platform"] == "windows":
                 self.build_tree.build(server, filtered_group, server["platform"], server["kernel_name"])
             else:
                 self.build_tree.build(server, filtered_group, server["platform"], srv_plaform_version)

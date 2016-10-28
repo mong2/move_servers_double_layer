@@ -12,18 +12,22 @@ class GroupController(object):
 	    return session
 
 	def build_server_group_object(self):
+		"""create halo server group object"""
 		srv_grp_obj = cloudpassage.ServerGroup(self.create_halo_session_object())
 		return(srv_grp_obj)
 
 	def index(self):
+		"""query all server groups in halo"""
 		groups = self.build_server_group_object()
 		return groups.list_all()
 
 	def show(self, group_id):
+		"""query detail information of a specific server group"""
 		groups = self.build_server_group_object()
 		return groups.describe(group_id)
 
 	def filtered_grp(self, group_ids = []):
+		"""query all the subgroups of the specified server groups"""
 		api = cloudpassage.HttpHelper(self.create_halo_session_object())
 		filtered_group = []
 		for group_id in group_ids:
@@ -32,6 +36,7 @@ class GroupController(object):
 		return filtered_group
 
 	def create_grp(self, grp_name, grp_id):
+		"""create new server group"""
 		api = cloudpassage.HttpHelper(self.create_halo_session_object())
 		data = {
 			"group": {
