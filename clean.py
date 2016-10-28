@@ -26,7 +26,7 @@ class Clean(object):
         servers = self.server.index(**kwargs)
 
         for server in servers:
-            srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"])
+            srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"].split(".")[0])
             filtered_group = self.group.filtered_grp([self.configs['aws_group']])
 
             if not server["platform"]:
