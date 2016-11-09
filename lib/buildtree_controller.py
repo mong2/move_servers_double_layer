@@ -1,8 +1,11 @@
+from log_controller import LogController
+
 
 class BuildTreeController(object):
     def __init__(self, server_controller, group_controller, configs):
         self.server = server_controller
         self.group = group_controller
+        self.log = LogController(configs)
         self.aws_grp = configs["aws_group"]
 
     def find_group(self, groups, **kwargs):
@@ -35,8 +38,18 @@ class BuildTreeController(object):
         """build the OS distro and distro version tree"""
         designated_group = self.find_group(filtered_group, name=parent_grp)
         if designated_group:
-            child_id = self.check_child_grp_exist(child_grp, designated_group)
-            self.server.move_servers(server, child_id, child_grp)
+            try:
+                child_id = self.check_child_grp_exist(child_grp, designated_group)
+                self.server.move_servers(server, child_id, child_grp)
+                self.log.log(server, child_id, child_grp)
+            except Exception as e:
+                self.log.log_error(e)
+                raise
         else:
-            parent_id, child_id = self.create_family(parent_grp, child_grp)
-            self.server.move_servers(server, child_id, child_grp)
+            try:
+                parent_id, child_id = self.create_family(parent_grp, child_grp)
+                self.server.move_servers(server, child_id, child_grp)
+                self.log.log(server, child_id, child_grp)
+            except Exception as e:
+                self.log.log_error(e)
+                raise

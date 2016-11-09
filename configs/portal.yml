@@ -3,5 +3,5 @@ port: 443
 key_id:
 secret_key:
 aws_group:
-retired_group_id:
 newserver_group: newservers
+log_destination: C:\\Cloudpassage Halo\\Logs\\clean.log

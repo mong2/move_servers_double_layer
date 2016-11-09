@@ -1,5 +1,4 @@
 import cloudpassage
-import datetime
 
 
 class ServerController(object):
@@ -34,15 +33,3 @@ class ServerController(object):
 		"""Move server to another server group"""
 		servers = self.build_server_object()
 		servers.assign_group(srv["id"], group_id)
-		self.log(srv, group_id, group_name)
-
-	def log(self, server, group_id, group_name):
-		"""log server movement"""
-		with open('log/clean.log', 'a') as f:
-			log_msg = "%s     Moved server label: %s (server_id: %s) from group name: %s (group_id: %s) to group name: %s (group_id: %s) \n" % (datetime.datetime.utcnow(),
-																																				server["server_label"],
-																																				server["id"],
-																																				server["group_name"],
-																																				server["group_id"],
-																																				group_name, group_id)
-			f.write(log_msg)

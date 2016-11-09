@@ -36,18 +36,10 @@ class Clean(object):
                 srv_plaform_version = "%s %s" % (server["platform"], server["platform_version"].split(".")[0])
                 self.build_tree.build(server, filtered_group, server["platform"], srv_plaform_version)
 
-    def move_deactivated_servers(self):
-        retired_group = self.group.show(self.configs["retired_group_id"])
-        deactivated_servers = self.server.index(state=["deactivated"], last_state_change_lte=self.time_gap)
-        filtered_servers = self.server.filter_srv(deactivated_servers, group_id=retired_group["id"])
-        for srv in filtered_servers:
-            self.server.move_servers(srv, retired_group["id"], retired_group["name"])
-
 
 def main():
     clean = Clean()
     clean.move_new_servers()
-    clean.move_deactivated_servers()
 
 if __name__ == "__main__":
     main()
