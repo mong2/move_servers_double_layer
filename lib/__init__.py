@@ -1,3 +1,4 @@
 from server_controller import ServerController
 from group_controller import GroupController
 from buildtree_controller import BuildTreeController
+from log_controller import LogController
