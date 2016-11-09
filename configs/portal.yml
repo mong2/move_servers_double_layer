@@ -4,4 +4,4 @@ key_id:
 secret_key:
 aws_group:
 newserver_group: newservers
-log_destination: C:\\Cloudpassage Halo\\Logs\\clean.log
+log_destination: C:\Cloudpassage Halo\Logs\clean.log
