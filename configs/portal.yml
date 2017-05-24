@@ -1,7 +1,11 @@
 api_hostname : https://api.cloudpassage.com
 port: 443
-key_id:
-secret_key:
-aws_group:
 newserver_group: newservers
 log_destination: C:\Cloudpassage Halo\Logs\clean.log
+key_pairs:
+  AWS:
+    key_id:
+    secret_key:
+  Azure:
+    key_id:
+    secret_key:
