@@ -7,15 +7,21 @@ Project to move all servers from a target server group into a subset of Linux an
 
 1.	Populate the following values in portal.yml (located in configs directory)
 
-  * key_id, secret_key pair (This is your halo portal api_keys)
-    
-  * aws_group (group_id for the target AWS subgroup)
-    
   * newserver_group (name of the new server group)
-    
+
   * log_destination (provide the absolute path where you would like your log file to be stored. i.e. C:\Cloudpassage      Halo\Logs\clean.log)
 
-  <i> Note: group_ids can be retrieved from the halo ui via v1/group. </i>
+  * Specify api key pair and its related server group name under key_pairs, below is an example of server groups - AWS & Azure. Note: Server group name is case sensitive.
+
+  ```
+  key_pairs:
+    AWS:
+      key_id:
+      secret_key:
+    Azure:
+      key_id:
+      secret_key:
+  ```
 
 2.	Python 2.7.10
 
